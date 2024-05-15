@@ -4,9 +4,9 @@ from authApp.models import CustomUser
 class MonitoringRecord(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='records')
     CRITERION_CHOICES = [
-        ('temperature', 'Temperature'),
-        ('humidity', 'Humidity'),
-        ('pressure', 'Pressure')
+        ('Temperature', 'Temperature'),
+        ('Humidity', 'Humidity'),
+        ('Pressure', 'Pressure')
     ]
     OPERATOR_CHOICES = [
         ('<', '<'),

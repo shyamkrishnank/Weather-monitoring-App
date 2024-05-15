@@ -17,3 +17,6 @@ class GetMonitaringRecords(APIView):
         else:
             return Response({'message':'Success','records':[]}, status=status.HTTP_200_OK)
 
+
+c
+

@@ -3,6 +3,7 @@ import { axiosInstance } from '../axios/AxiosInterceptor'
 import { Button } from '@nextui-org/react'
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter,Input, useDisclosure} from "@nextui-org/react";
 import {Select, SelectItem} from "@nextui-org/react";
+import { toast } from 'react-toastify';
 
 
 
@@ -12,6 +13,10 @@ function Records() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [criterion, setCriterion] = useState()
     const [comparison_operator, setComparisonOperator] = useState() 
+    const [frequency, setFrequency] = useState()
+    const [value, setValue] = useState()
+
+
     const critirias = [
         {'key':'temperature', 'value':'Temperature'},
         {'key':'humidity','value':'Humidity'},
@@ -24,7 +29,11 @@ function Records() {
         {'key':'>=','value':'>='},
         {'key':'==','value':'=='},
 
-
+    ]
+    const frequency_choices = [
+        {'key':'Daily','value':'Daily'},
+        {'key':'Montly','value':'Montly'},
+        {'key':'Yearly','value':'Yearly'}
     ]
 
 
@@ -38,7 +47,33 @@ function Records() {
         })
     },[])
 
+    const handleSubmit = () =>{
+        if (value && frequency && comparison_operator && criterion){
+            const data = {
+                'value':value,
+                'frequency':frequency,
+                'comparison_operator':comparison_operator,
+                'criterion':criterion
+            }
+            console.log(data)
 
+        }
+        else{
+            toast.error('Please Fill All fields', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                })
+                onOpen()
+
+        }
+
+    }
 
   return (
     <div>
@@ -50,13 +85,18 @@ function Records() {
               <ModalHeader className="flex flex-col gap-1">Add Recorde</ModalHeader>
               <ModalBody>
                 <div className='flex flex-col gap-3'>
+
+                <Input type="number" label="Value" placeholder="Enter the value"  value={value} onChange={e=>setValue(e.target.value)} />
+
                 <Select
                     label="Criterion"
                     placeholder="Select a critiria"
                     className="max-w-xs"
+                    value={criterion} 
+                    onChange={e=>setCriterion(e.target.value)}
                 >
                     {critirias.map((critiria) => (
-                    <SelectItem key={critiria.value} value={criterion} onChange={e=>setComparisonOperator(e.target.value)}>
+                    <SelectItem key={critiria.value} >
                         {critiria.key}
                     </SelectItem>
                     ))}
@@ -67,15 +107,31 @@ function Records() {
                     label="Comparison Operator"
                     placeholder="Select an operator"
                     className="max-w-xs"
+                    value={comparison_operator} 
+                    onChange={e=>setComparisonOperator(e.target.value)}
                 >
                     {comparison_operators.map((comparison) => (
-                    <SelectItem key={comparison.value} value={}>
+                    <SelectItem key={comparison.value} >
                         {comparison.key}
                     </SelectItem>
                     ))}
                     </Select>
 
-                  <Input type="text" label="" placeholder="Enter your email" />
+                    <Select
+                    label="Comparison Operator"
+                    placeholder="Select an operator"
+                    className="max-w-xs"
+                    value={frequency}
+                     onChange={e=>setFrequency(e.target.value)}
+                >
+                    {frequency_choices.map((frequence) => (
+                    <SelectItem key={frequence.value}>
+                        {frequence.key}
+                    </SelectItem>
+                    ))}
+                    </Select>
+
+
 
 
                 </div>
@@ -84,8 +140,8 @@ function Records() {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
+                <Button color="primary" onPress={handleSubmit}>
+                  Submit
                 </Button>
               </ModalFooter>
             </>
