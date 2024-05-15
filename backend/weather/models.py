@@ -1,12 +1,14 @@
 from django.db import models
 from authApp.models import CustomUser
+import uuid
 
 class MonitoringRecord(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='records')
     CRITERION_CHOICES = [
-        ('Temperature', 'Temperature'),
-        ('Humidity', 'Humidity'),
-        ('Pressure', 'Pressure')
+        ('temperature', 'temperature'),
+        ('humidity', 'humidity'),
+        ('pressure', 'pressure')
     ]
     OPERATOR_CHOICES = [
         ('<', '<'),
@@ -30,15 +32,20 @@ class MonitoringRecord(models.Model):
 
 
 class WeatherData(models.Model):
-    temperature = models.FloatField()
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    temp = models.FloatField()
     humidity = models.FloatField()
     pressure = models.FloatField()
+    lat = models.FloatField(null=True)
+    lon = models.FloatField(null=True)
     fetched_at = models.DateTimeField(auto_now=True)
 
 
 class Notification(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notification')
     message = models.TextField()
+    report = models.ForeignKey(MonitoringRecord, on_delete=models.CASCADE, related_name='notification')
     status = models.CharField(max_length=30, default='Not Seen')
 
     def __str__(self):

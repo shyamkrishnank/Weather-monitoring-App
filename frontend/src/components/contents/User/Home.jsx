@@ -9,12 +9,12 @@ function Home() {
     const {isOpen, onOpen,onClose, onOpenChange} = useDisclosure()
     const [city_name, setCityname] = useState()
     const [state, setState] = useState()
-    const [state_code, setStateCode] = useState()
+    const [pin_code, setPinCode] = useState()
     const [country, setCountry] = useState()
     const [country_code, setCountryCode] = useState()
 
     useEffect(()=>{
-        axiosInstance('/auth/getlocation')
+        axiosInstance.get('/auth/getlocation')
         .then(response=>{
             console.log(response)
         })
@@ -49,11 +49,11 @@ function Home() {
     }
     
     const handleSubmit = () =>{
-     if(city_name && state && state_code && country && country_code){
+     if(city_name && state && pin_code && country && country_code){
         const data = {
             'city_name':city_name,
             'state' : state,
-            'state_code': state_code,
+            'pin_code': pin_code,
             'country':country,
             'country_code':country_code
         }
@@ -73,7 +73,16 @@ function Home() {
             onClose()
         })
         .catch(error=>{
-            console.log(error)
+            toast.error(`${error.response.data.message}`, {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+                })
         })
     }
     else{
@@ -105,7 +114,7 @@ function Home() {
                     <div className='flex flex-col gap-2'>
                      <Input type="text" value={city_name} onChange={e=>setCityname(e.target.value)} label="City Name" placeholder="Enter your city name" />
                      <Input type="text" value={state} onChange={e=>setState(e.target.value)} label="State" placeholder="Enter your state" />
-                     <Input type="text" value={state_code} onChange={e=>setStateCode(e.target.value)} label="State Code" placeholder="Enter your state code" />
+                     <Input type="text" value={pin_code} onChange={e=>setPinCode(e.target.value)} label="Pin Code" placeholder="Enter your pin code" />
                      <Input type="text" value={country} onChange={e=>setCountry(e.target.value)} label="Country" placeholder="Enter your country" />
                      <Input type="text" value={country_code} onChange={e=>setCountryCode(e.target.value)} label="Country Code" placeholder="Enter your country code" />
                     </div>

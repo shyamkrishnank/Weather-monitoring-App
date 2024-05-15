@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+ENV_PATH = os.path.join(BASE_DIR,'.env')
+
+load_dotenv(dotenv_path=ENV_PATH)
 
 
 # Quick-start development settings - unsuitable for production
@@ -75,11 +80,33 @@ REST_FRAMEWORK = {
 }
 
 
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/kolkata'
+
+CELERY_BEAT_SCHEDULE = {
+    'task-daily': {
+        'task': 'weather.tasks.Search_Recorded_Data',
+        'schedule': timedelta(days=1),
+        'args': (),
+        'options': {
+            'expires': 40.0,
+        },
+    },
+}
+
+
+
+
 #cors allowed origins
 CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     "http://localhost:5173",
 ]
+
+WEATHER_API_KEY =  os.environ.get('WEATHER_API_KEY')
 
 
 #Changed the django User to CustomUser

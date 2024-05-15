@@ -18,9 +18,9 @@ function Records() {
 
 
     const critirias = [
-        {'key':'temperature', 'value':'Temperature'},
-        {'key':'humidity','value':'Humidity'},
-        {'key':'pressure', 'value':'Pressure'}
+        {'key':'temperature', 'value':'temperature'},
+        {'key':'humidity','value':'humidity'},
+        {'key':'pressure', 'value':'pressure'}
     ]
     const comparison_operators = [
         {'key':'<','value':'<'},
@@ -55,7 +55,24 @@ function Records() {
                 'comparison_operator':comparison_operator,
                 'criterion':criterion
             }
-            console.log(data)
+            axiosInstance.post('/weather/addrecords/', data)
+            .then(response=>{
+                toast.success(`${response.data.message}`, {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: true,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "colored",
+                    })
+                onClose()
+                setRecords(prev=>[...prev,response.data.record])
+            })
+            .catch(error=>{
+                console.log(error)
+            })
 
         }
         else{

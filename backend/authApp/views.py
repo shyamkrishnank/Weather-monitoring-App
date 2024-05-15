@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from .models import CustomUser, CurrentLocation
 from .serializers import *
 from .token import get_tokens_for_user
+from weather.weatherApi import get_coordinates_data
 
 
 class SignUpView(APIView):
@@ -63,6 +64,11 @@ class AddLocation(APIView):
     def post(self, request):
         data = request.data
         data['user'] = request.user.id
+        cordinates = get_coordinates_data(data['pin_code'], data['country_code'])
+        if cordinates == 'Error Occured':
+            return Response({'message':'Invalid Data'},status=status.HTTP_400_BAD_REQUEST)
+        data['lon'] = cordinates['lon']
+        data['lat'] = cordinates['lat']
         serializer = UserLocationSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
